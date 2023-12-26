@@ -1,18 +1,19 @@
-require("dotenv").config();
+import { config } from "dotenv";
+config();
+
+import express from "express";
+const app = express();
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import routes from "./routes/index.js";
 
 // ! db
-require("./db/db");
+import { connectToDatabase } from "./db/db.js";
 
-const express = require("express");
-const app = express();
-const cors = require("cors");
-const cookieParse = require("cookie-parser");
-
-const routes = require("./routes");
 
 // ! app utilities
 app.use(cors());
-app.use(cookieParse());
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,6 +21,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1", routes);
 
 // ! server listening
-app.listen(process.env.PORT, process.env.HOSTNAME, () => {
-    console.log(`Server running at -> http://${process.env.HOSTNAME}:${process.env.PORT}/api/v1`)
-});
+connectToDatabase()
+    .then(() => {
+        app.listen(process.env.PORT, process.env.HOSTNAME, () => {
+            console.log(`Server running at -> http://${process.env.HOSTNAME}:${process.env.PORT}/api/v1`);
+        });
+    })
+    .catch((err) => {
+        console.warn("error => ", err)
+    })

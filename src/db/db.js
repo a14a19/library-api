@@ -1,14 +1,36 @@
-const mongoose = require('mongoose');
+import { connect, disconnect } from 'mongoose';
 
-mongoose.set('strictQuery', true)
-mongoose.connect(process.env.MONGOURI)
-    .then(() => console.log("DB connection successful"))
-    .catch(err => console.log(`DB connection error: ${err}`));
+async function connectToDatabase() {
+    try {
+        await connect(process.env.MONGOURI)
+    } catch (e) {
+        console.log(e);
+        throw new Error("MongDB connection failed ");
+    }
+}
 
-let db = mongoose.connection;
+async function disconnectFromDatabase() {
+    try {
+        await disconnect()
+    } catch (e) {
+        console.log(e);
+        throw new Error("MongDB disconnection failed ");
+    }
+}
 
-db.on('error', console.error.bind(console, 'DB connection error!'));
+export { connectToDatabase, disconnectFromDatabase };
 
-db.on('open', () => {
-    console.log("MongoDB is connected!");
-});
+// const mongoose = require('mongoose');
+
+// mongoose.set('strictQuery', true)
+// mongoose.connect(process.env.MONGOURI)
+//     .then(() => console.log("DB connection successful"))
+//     .catch(err => console.log(`DB connection error: ${err}`));
+
+// let db = mongoose.connection;
+
+// db.on('error', console.error.bind(console, 'DB connection error!'));
+
+// db.on('open', () => {
+//     console.log("MongoDB is connected!");
+// });

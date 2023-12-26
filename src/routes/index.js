@@ -1,5 +1,8 @@
-const routes = require("express").Router();
-const user = require("./user.route");
+import { Router } from "express";
+const routes = Router();
+
+import user from "./user.route.js";
+
 
 routes.get("/", (req, res) => {
     res.send({ msg: 'Welcome to library again' })
@@ -7,4 +10,4 @@ routes.get("/", (req, res) => {
 
 routes.use("/user", user)
 
-module.exports = routes;
+export default routes;
