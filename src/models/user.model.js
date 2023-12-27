@@ -43,14 +43,6 @@ const User = new Schema(
     }
 );
 
-// User.pre("save", async function (next) {
-//     if (!this.isModified("password")) {
-//         return next();
-//     }
-//     const hash = await bcrypt.hash(this.password, Number(bcryptSalt));
-//     this.password = hash;
-//     next();
-// });
 
 // ! password hashing method 
 User.methods.generateHash = (password) => {
