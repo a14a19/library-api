@@ -2,7 +2,7 @@ import { connect, disconnect } from 'mongoose';
 
 async function connectToDatabase() {
     try {
-        await connect(process.env.MONGOURI)
+        await connect(process.env.MONGO_URI)
     } catch (e) {
         console.log(e);
         throw new Error("MongDB connection failed ");

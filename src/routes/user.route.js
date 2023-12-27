@@ -1,13 +1,13 @@
 import { Router } from "express";
-import { insertUser } from "../controllers/user.controller.js";
-import { userValidation } from "../validators/user.validator.js";
+import { insertUser, getUserById, getAllUser, updateUserDetail, userSignIn } from "../controllers/user.controller.js";
+import { userSignInValidation, userSignUpValidation, userUpdateValidation } from "../validators/user.validator.js";
 
-const user = Router();
+const userRoute = Router();
 
-user.get("/", (req, res, next) => {
-    res.send({ msg: "User here" })
-});
+userRoute.post("/user", userSignUpValidation, insertUser)
+userRoute.get("/", getAllUser)
+userRoute.post("/sign-in", userSignInValidation, userSignIn)
+userRoute.put("/user/:userId", userUpdateValidation, updateUserDetail)
+userRoute.get("/user/:userId", getUserById)
 
-user.post("/", userValidation, insertUser)
-
-export default user;
+export default userRoute;

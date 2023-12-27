@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
-// const bcrypt = require('bcryptjs');
-// const bcryptSalt = process.env.BCRYPT_SALT;
+import bcrypt from "bcryptjs";
+const bcryptSalt = process.env.BCRYPT_SALT;
 
 const User = new Schema(
     {
@@ -52,14 +52,15 @@ const User = new Schema(
 //     next();
 // });
 
-// User.methods.generateHash = (password) => {
-//     return bcrypt.hashSync(password, 10);
-// }
+// ! password hashing method 
+User.methods.generateHash = (password) => {
+    return bcrypt.hashSync(password, Number(bcryptSalt));
+}
 
-// User.methods.validatePassword = function (password) {
-//     console.log(password, this.password)
-//     const result = bcrypt.compareSync(password, this.password);
-//     return result;
-// }
+// ! password comparing method
+User.methods.validatePassword = function (password, oldPassword) {
+    const result = bcrypt.compareSync(password, oldPassword);
+    return result;
+}
 
 export default mongoose.model('Users', User);
