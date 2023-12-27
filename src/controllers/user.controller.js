@@ -74,7 +74,7 @@ export const userSignIn = async (req, res, next) => {
             });
 
             checkUserDetail[0].token = token;
-            return res.status(200).send({ data: checkUserDetail, error: undefined, message: "User sign-in successful", status: pwdCheck.validatePassword(req.body.password, checkUserDetail[0].password) })
+            return res.status(200).send({ data: checkUserDetail, token: checkUserDetail[0].token, error: undefined, message: "User sign-in successful", status: pwdCheck.validatePassword(req.body.password, checkUserDetail[0].password) })
         } else {
             return res.status(400).send({ data: undefined, error: "Password didn't matched", message: "Password didn't matched", status: false })
         }

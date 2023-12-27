@@ -18,7 +18,7 @@ export const transactionBasedOnUser = async (req, res, next) => {
             return res.status(400).send({ data: undefined, error: "Please enter valid Id", message: "Please enter valid Id", status: false })
         }
         const allTransBasedOnUser = await LibTrans.find({ userId: req.params.userId });
-        return res.status(200).send({ data: allTransBasedOnUser, error: undefined, message: "All library transactions", status: true })
+        return res.status(200).send({ data: allTransBasedOnUser, error: undefined, message: "All library transactions of a User", status: true })
     } catch (e) {
         console.log("get all transaction: ", e)
         return res.status(500).send({ error: e, data: undefined, message: "Internal server error", status: false })
@@ -36,7 +36,7 @@ export const addTransaction = async (req, res, next) => {
         }
         const addTrans = new LibTrans(req.body)
         addTrans.save()
-        return res.status(200).send({ data: addTrans, error: undefined, message: "All library transactions", status: true })
+        return res.status(200).send({ data: addTrans, error: undefined, message: "Library transaction added", status: true })
     } catch (e) {
         console.log("get all transaction: ", e)
         return res.status(500).send({ error: e, data: undefined, message: "Internal server error", status: false })
@@ -51,7 +51,7 @@ export const updateTransaction = async (req, res, next) => {
         }
         await LibTrans.findByIdAndUpdate(req.params.transactionId, req.body)
         const updateTransaction = await LibTrans.findById(req.params.transactionId)
-        return res.status(200).send({ data: updateTransaction, error: undefined, message: "All library transactions", status: true })
+        return res.status(200).send({ data: updateTransaction, error: undefined, message: "updated library transactions", status: true })
     } catch (e) {
         console.log("get all transaction: ", e)
         return res.status(500).send({ error: e, data: undefined, message: "Internal server error", status: false })
