@@ -13,7 +13,10 @@ import { connectToDatabase } from "./db/db.js";
 
 
 // ! app utilities
-app.use(cors());
+app.use(cors((req, cb) => {
+    let corsOptions = { origin: true, credentials: true };
+    cb(null, corsOptions)
+}));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

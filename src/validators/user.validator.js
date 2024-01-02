@@ -38,7 +38,7 @@ export const userSignUpValidation = async (req, res, next) => {
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-        res.status(422).send({ errors: errors.array() })
+        return res.status(422).send({ errors: errors.array() })
     } else {
         next();
     }
@@ -58,13 +58,13 @@ export const userSignInValidation = async (req, res, next) => {
     }).run(req);
 
     await check('password', 'Password is required').exists().trim().run(req);
-    await check('password', 'Password should be strong').isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minSymbols: 1 }).run(req);
-    await check('password', 'Password should be strong').isString().run(req);
+    await check('password', 'Password didn\'t match, please try again.').isStrongPassword({ minLength: 8, minLowercase: 1, minUppercase: 1, minSymbols: 1 }).run(req);
+    await check('password', 'Password should be string').isString().run(req);
 
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-        res.status(422).send({ errors: errors.array() })
+        return res.status(400).send({ errors: errors.array() })
     } else {
         next();
     }
@@ -110,7 +110,7 @@ export const userUpdateValidation = async (req, res, next) => {
     const errors = validationResult(req)
 
     if (!errors.isEmpty()) {
-        res.status(422).send({ errors: errors.array() })
+        return res.status(422).send({ errors: errors.array() })
     } else {
         next();
     }

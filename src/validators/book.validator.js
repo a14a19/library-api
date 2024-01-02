@@ -10,9 +10,9 @@ export const bookAddValidation = async (req, res, next) => {
     await check('author', 'Author should be a string').isString().run(req);
     await check('author', 'Author length should be at least 2 characters.').isLength({ min: 2, max: 255 }).run(req);
 
-    await check('status', 'Status is required').exists().trim().run(req);
-    await check('status', 'Status should be a string').isString().run(req);
-    await check('status', 'Status is invalid, choose from - "available", "borrowed"').isIn(["available", "borrowed"]).run(req);
+    await check('status', 'Status is required').optional().trim().run(req);
+    await check('status', 'Status should be a string').optional().isString().run(req);
+    await check('status', 'Status is invalid, choose from - "available", "borrowed"').optional().isIn(["available", "borrowed"]).run(req);
 
     const errors = validationResult(req)
 

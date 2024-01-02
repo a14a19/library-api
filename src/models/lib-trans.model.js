@@ -20,8 +20,8 @@ const LibTrans = new Schema(
         transactionType: {
             type: String,
             required: true,
-            default: "borrowed",
-            enum: ["borrowed", "return"]
+            default: "borrow",
+            enum: ["borrow", "return"]
         },
     },
     {

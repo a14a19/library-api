@@ -19,7 +19,7 @@ export const insertBook = async (req, res, next) => {
         }
         const addBook = new Books(req.body)
         addBook.save()
-        return res.status(200).send({ data: addBook, error: undefined, message: "All books", status: true })
+        return res.status(200).send({ data: addBook, error: undefined, message: "Book added successfully", status: true })
     } catch (e) {
         // console.log("insert books: ", e)
         return res.status(500).send({ data: undefined, error: e, message: "Internal server error", status: false })
@@ -61,6 +61,20 @@ export const deleteBook = async (req, res, next) => {
         return res.status(200).send({ data: bookToDelete, error: undefined, message: "Book deleted", status: true })
     } catch (e) {
         // console.log("update book: ", e)
+        return res.status(500).send({ data: undefined, error: e, message: "Internal server error", status: false })
+    }
+}
+
+export const getBookById = async (req, res, next) => {
+    try {
+        const isMongooseId = mongoose.Types.ObjectId.isValid(req.params.bookId.toString())
+        if (!isMongooseId) {
+            return res.status(400).send({ data: undefined, error: "Please enter valid Id", message: "Please enter valid Id", status: false })
+        }
+        const bookById = await Books.findById(req.params.bookId)
+        return res.status(200).send({ data: bookById, error: undefined, message: "User information by id", status: true })
+    } catch (e) {
+        // console.log("User by Id: ", e)
         return res.status(500).send({ data: undefined, error: e, message: "Internal server error", status: false })
     }
 }

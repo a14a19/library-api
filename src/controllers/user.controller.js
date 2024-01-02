@@ -10,7 +10,9 @@ export const insertUser = async (req, res, next) => {
 
         const userSave = await newUser.save();
 
-        return res.status(200).send({ data: userSave, error: undefined, message: "User saved successfully", status: true })
+        const { password, ...rest } = userSave._doc;
+
+        return res.status(200).send({ data: rest, error: undefined, message: "User saved successfully", status: true })
     } catch (e) {
         // console.log("insert user: ", e)
         return res.status(500).send({ error: e, data: undefined, message: "Internal server error", status: false })
@@ -48,7 +50,7 @@ export const getUserById = async (req, res, next) => {
 
 export const getAllUser = async (req, res, next) => {
     try {
-        const allUser = await Users.find({})
+        const allUser = await Users.find({ role: "user" }, { password: 0 })
         return res.status(200).send({ data: allUser, error: undefined, message: "all user information", status: true })
     } catch (e) {
         // console.log("all user: ", e)
@@ -59,22 +61,22 @@ export const getAllUser = async (req, res, next) => {
 export const userSignIn = async (req, res, next) => {
     try {
         const checkUserDetail = await Users.find({ email: req.body.email })
+        const { password, ...claims } = checkUserDetail[0]._doc;
         const pwdCheck = new Users(req.body);
         // pwdCheck.validatePassword(req.body.password)
         if (pwdCheck.validatePassword(req.body.password, checkUserDetail[0].password)) {
-            const claims = {
-                name: checkUserDetail[0].name,
-                userName: checkUserDetail[0].userName,
-                email: checkUserDetail[0].email,
-                role: checkUserDetail[0].role,
-            }
+            // const claims = {
+            //     name: checkUserDetail[0].name,
+            //     userName: checkUserDetail[0].userName,
+            //     email: checkUserDetail[0].email,
+            //     role: checkUserDetail[0].role,
+            // }
             const token = jwt.sign(claims, process.env.JWT_TOKEN_KEY, {
                 algorithm: 'HS256',
                 expiresIn: process.env.JWT_TOKEN_EXPIRES_IN
             });
-
             checkUserDetail[0].token = token;
-            return res.status(200).send({ data: checkUserDetail, token: checkUserDetail[0].token, error: undefined, message: "User sign-in successful", status: pwdCheck.validatePassword(req.body.password, checkUserDetail[0].password) })
+            return res.status(200).send({ data: claims, token: token, error: undefined, message: "User sign-in successful", status: pwdCheck.validatePassword(req.body.password, checkUserDetail[0].password) })
         } else {
             return res.status(400).send({ data: undefined, error: "Password didn't matched", message: "Password didn't matched", status: false })
         }
