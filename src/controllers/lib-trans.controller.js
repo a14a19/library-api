@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import LibTrans from "../models/lib-trans.model.js";
 import Books from "../models/book.model.js";
 
+const ObjectId = mongoose.Types.ObjectId;
+
 export const getAllTransaction = async (req, res, next) => {
     try {
         const allTrans = await LibTrans.find({});
@@ -18,7 +20,7 @@ export const transactionBasedOnUser = async (req, res, next) => {
         if (!isMongooseId) {
             return res.status(400).send({ data: undefined, error: "Please enter valid Id", message: "Please enter valid Id", status: false })
         }
-        const allTransBasedOnUser = await LibTrans.find({ userId: req.params.userId });
+        const allTransBasedOnUser = await LibTrans.find({ userId: req.params.userId }).populate({ path: 'bookId' });
         return res.status(200).send({ data: allTransBasedOnUser, error: undefined, message: "All library transactions of a User", status: true })
     } catch (e) {
         console.log("get all transaction: ", e)
@@ -79,12 +81,14 @@ export const updateTransactionByUserBookIds = async (req, res, next) => {
             // ! book status available
             await Books.findByIdAndUpdate(req.query.bookId, { status: "available" })
         }
-
+        const user_ID = new ObjectId(req.query.userId)
+        const book_ID = new ObjectId(req.query.bookId)
+        console.log(user_ID, book_ID);
         await LibTrans.findOneAndUpdate({ userId: req.query.userId, bookId: req.query.bookId }, req.body)
         const updateTransaction = await LibTrans.find({ userId: req.query.userId, bookId: req.query.bookId })
         return res.status(200).send({ data: updateTransaction, error: undefined, message: "updated library transactions", status: true })
     } catch (e) {
-        console.log("get all transaction: ", e)
+        console.log("updateTransactionByUserBookIds: ", e)
         return res.status(500).send({ error: e, data: undefined, message: "Internal server error", status: false })
     }
 }
